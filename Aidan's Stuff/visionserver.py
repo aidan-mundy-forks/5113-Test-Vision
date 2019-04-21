@@ -332,7 +332,7 @@ class GripPipeline:
         Returns:
             Contours as a list of numpy.ndarray.
         """
-        output = [[],[],[],[],[],[],[]]
+        output = [[], [], [], [], [], [], []]
         for contour in input_contours:
             x, y, w, h = cv2.boundingRect(contour)
             if (w < min_width or w > max_width):
@@ -362,16 +362,6 @@ class GripPipeline:
             output[6].append(ratio)
         return output
 
-processing = GripPipeline()
-sendError = ntproperty("/visionProcessing/error", False, writeDefault=True, doc='Returns True if there is currently an error.')
-sendErrorMessage = ntproperty("/visionProcessing/errorMessage", "No current error message.", writeDefault=True, doc='This is the current vision error message from the raspberry pi.')
-xValue = ntproperty("/visionProcessing/targetInfo/contoursReport/x", [0.0, 0.0], writeDefault=True, doc='This is the x value from the gripPipeline.')
-yValue = ntproperty("/visionProcessing/targetInfo/contoursReport/y", [0.0, 0.0], writeDefault=True, doc='This is the y value from the gripPipeline.')
-wValue = ntproperty("/visionProcessing/targetInfo/contoursReport/width", [0.0, 0.0], writeDefault=True, doc='This is the width value from the gripPipeline.')
-hValue = ntproperty("/visionProcessing/targetInfo/contoursReport/height", [0.0, 0.0], writeDefault=True, doc='This is the height value from the gripPipeline.')
-areaValue = ntproperty("/visionProcessing/targetInfo/contoursReport/area", [0.0, 0.0], writeDefault=True, doc='This is the area value from the gripPipeline.')
-solidValue = ntproperty("/visionProcessing/targetInfo/contoursReport/solidity", [0.0, 0.0], writeDefault=True, doc='This is the solidity value from the gripPipeline.')
-ratioValue = ntproperty("/visionProcessing/targetInfo/contoursReport/ratio", [0.0, 0.0], writeDefault=True, doc='This is the ratio value from the gripPipeline.')
 
 if __name__ == "__main__":
     if len(sys.argv) >= 2:
@@ -398,19 +388,41 @@ if __name__ == "__main__":
     for config in switchedCameraConfigs:
         startSwitchedCamera(config)
 
+    processing = GripPipeline()
+    sendError = ntproperty("/visionProcessing/error", False, writeDefault=True,
+                           doc='Returns True if there is currently an error.')
+    sendErrorMessage = ntproperty("/visionProcessing/errorMessage", "No current error message.",
+                                  writeDefault=True, doc='This is the current vision error message from the raspberry pi.')
+    xValue = ntproperty("/visionProcessing/targetInfo/contoursReport/x",
+                        [0.0, 0.0], writeDefault=False, doc='This is the x value from the gripPipeline.')
+    yValue = ntproperty("/visionProcessing/targetInfo/contoursReport/y",
+                        [0.0, 0.0], writeDefault=True, doc='This is the y value from the gripPipeline.')
+    wValue = ntproperty("/visionProcessing/targetInfo/contoursReport/width",
+                        [0.0, 0.0], writeDefault=True, doc='This is the width value from the gripPipeline.')
+    hValue = ntproperty("/visionProcessing/targetInfo/contoursReport/height",
+                        [0.0, 0.0], writeDefault=True, doc='This is the height value from the gripPipeline.')
+    areaValue = ntproperty("/visionProcessing/targetInfo/contoursReport/area",
+                           [0.0, 0.0], writeDefault=True, doc='This is the area value from the gripPipeline.')
+    solidValue = ntproperty("/visionProcessing/targetInfo/contoursReport/solidity", [
+                            0.0, 0.0], writeDefault=True, doc='This is the solidity value from the gripPipeline.')
+    ratioValue = ntproperty("/visionProcessing/targetInfo/contoursReport/ratio", [
+                            0.0, 0.0], writeDefault=True, doc='This is the ratio value from the gripPipeline.')
+
     videoCapture = CameraServer.getInstance().getVideo(name='Front_Camera')
+    frame = videoCapture.grabFrame(None, timeout=0.5)[1]
     # loop forever
     while True:
-        frameInfo = videoCapture.grabFrame()
-        processing.process(frameInfo(1))
+        frame = videoCapture.grabFrame(frame, timeout=0.5)[1]
+        processing.process(frame)
         if len(processing.filter_contours_output[0]) != 2:
             sendError = True
-            sendErrorMessage = ("There are " + \
-                processing.filter_contours_output[0].len(
-                ) + " contours, but there should be 2!")
+            sendErrorMessage = ("There are " +
+                                processing.filter_contours_output[0].len(
+                                ) + " contours, but there should be 2!")
         else:
             sendError = False
             sendErrorMessage = ("No current error message.")
+            print(processing.filter_contours_output)
             xValue = processing.filter_contours_output[0]
             yValue = processing.filter_contours_output[1]
             wValue = processing.filter_contours_output[2]
