@@ -363,6 +363,27 @@ class GripPipeline:
         return output
 
 
+class NTVars:
+    sendError = ntproperty("/visionProcessing/error", False, writeDefault=True,
+                           doc='Returns True if there is currently an error.')
+    sendErrorMessage = ntproperty("/visionProcessing/errorMessage", "No current error message.",
+                                  writeDefault=True, doc='This is the current vision error message from the raspberry pi.')
+    xValue = ntproperty("/visionProcessing/targetInfo/contoursReport/x",
+                        [0.0, 0.0], writeDefault=False, doc='This is the x value from the gripPipeline.')
+    yValue = ntproperty("/visionProcessing/targetInfo/contoursReport/y",
+                        [0.0, 0.0], writeDefault=True, doc='This is the y value from the gripPipeline.')
+    wValue = ntproperty("/visionProcessing/targetInfo/contoursReport/width",
+                        [0.0, 0.0], writeDefault=True, doc='This is the width value from the gripPipeline.')
+    hValue = ntproperty("/visionProcessing/targetInfo/contoursReport/height",
+                        [0.0, 0.0], writeDefault=True, doc='This is the height value from the gripPipeline.')
+    areaValue = ntproperty("/visionProcessing/targetInfo/contoursReport/area",
+                           [0.0, 0.0], writeDefault=True, doc='This is the area value from the gripPipeline.')
+    solidValue = ntproperty("/visionProcessing/targetInfo/contoursReport/solidity", [
+                            0.0, 0.0], writeDefault=True, doc='This is the solidity value from the gripPipeline.')
+    ratioValue = ntproperty("/visionProcessing/targetInfo/contoursReport/ratio", [
+                            0.0, 0.0], writeDefault=True, doc='This is the ratio value from the gripPipeline.')
+
+
 if __name__ == "__main__":
     if len(sys.argv) >= 2:
         configFile = sys.argv[1]
@@ -389,24 +410,7 @@ if __name__ == "__main__":
         startSwitchedCamera(config)
 
     processing = GripPipeline()
-    sendError = ntproperty("/visionProcessing/error", False, writeDefault=True,
-                           doc='Returns True if there is currently an error.')
-    sendErrorMessage = ntproperty("/visionProcessing/errorMessage", "No current error message.",
-                                  writeDefault=True, doc='This is the current vision error message from the raspberry pi.')
-    xValue = ntproperty("/visionProcessing/targetInfo/contoursReport/x",
-                        [0.0, 0.0], writeDefault=False, doc='This is the x value from the gripPipeline.')
-    yValue = ntproperty("/visionProcessing/targetInfo/contoursReport/y",
-                        [0.0, 0.0], writeDefault=True, doc='This is the y value from the gripPipeline.')
-    wValue = ntproperty("/visionProcessing/targetInfo/contoursReport/width",
-                        [0.0, 0.0], writeDefault=True, doc='This is the width value from the gripPipeline.')
-    hValue = ntproperty("/visionProcessing/targetInfo/contoursReport/height",
-                        [0.0, 0.0], writeDefault=True, doc='This is the height value from the gripPipeline.')
-    areaValue = ntproperty("/visionProcessing/targetInfo/contoursReport/area",
-                           [0.0, 0.0], writeDefault=True, doc='This is the area value from the gripPipeline.')
-    solidValue = ntproperty("/visionProcessing/targetInfo/contoursReport/solidity", [
-                            0.0, 0.0], writeDefault=True, doc='This is the solidity value from the gripPipeline.')
-    ratioValue = ntproperty("/visionProcessing/targetInfo/contoursReport/ratio", [
-                            0.0, 0.0], writeDefault=True, doc='This is the ratio value from the gripPipeline.')
+    ntVars = NTVars()
 
     videoCapture = CameraServer.getInstance().getVideo(name='Front_Camera')
     frame = videoCapture.grabFrame(None, timeout=0.5)[1]
@@ -420,14 +424,13 @@ if __name__ == "__main__":
                                 processing.filter_contours_output[0].len(
                                 ) + " contours, but there should be 2!")
         else:
-            sendError = False
-            sendErrorMessage = ("No current error message.")
-            print(processing.filter_contours_output)
-            xValue = processing.filter_contours_output[0]
-            yValue = processing.filter_contours_output[1]
-            wValue = processing.filter_contours_output[2]
-            hValue = processing.filter_contours_output[3]
-            areaValue = processing.filter_contours_output[4]
-            solidValue = processing.filter_contours_output[5]
-            ratioValue = processing.filter_contours_output[6]
+            ntVars.sendError = False
+            ntVars.sendErrorMessage = ("No current error message.")
+            ntVars.xValue = processing.filter_contours_output[0]
+            ntVars.yValue = processing.filter_contours_output[1]
+            ntVars.wValue = processing.filter_contours_output[2]
+            ntVars.hValue = processing.filter_contours_output[3]
+            ntVars.areaValue = processing.filter_contours_output[4]
+            ntVars.solidValue = processing.filter_contours_output[5]
+            ntVars.ratioValue = processing.filter_contours_output[6]
         time.sleep(.01)
