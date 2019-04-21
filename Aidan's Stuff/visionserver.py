@@ -401,7 +401,7 @@ if __name__ == "__main__":
     videoCapture = CameraServer.getInstance().getVideo(name='Front_Camera')
     # loop forever
     while True:
-        frameInfo = videoCapture.grabFrame(timeout = .5)
+        frameInfo = videoCapture.grabFrame()
         processing.process(frameInfo(1))
         if len(processing.filter_contours_output[0]) != 2:
             sendError = True
