@@ -421,8 +421,7 @@ if __name__ == "__main__":
         if len(processing.filter_contours_output[0]) != 2:
             sendError = True
             sendErrorMessage = ("There are " +
-                                processing.filter_contours_output[0].len(
-                                ) + " contours, but there should be 2!")
+                                len(processing.filter_contours_output[0]) + " contours, but there should be 2!")
         else:
             ntVars.sendError = False
             ntVars.sendErrorMessage = ("No current error message.")
