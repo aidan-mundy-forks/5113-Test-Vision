@@ -245,21 +245,20 @@ class GripPipeline:
         self.find_contours_output = None
 
         self.__filter_contours_contours = self.find_contours_output
-        self.__filter_contours_min_area = 200.0
+        self.__filter_contours_min_area = 100.0
         self.__filter_contours_min_perimeter = 10.0
         self.__filter_contours_min_width = 15.0
         self.__filter_contours_max_width = 1000.0
         self.__filter_contours_min_height = 20.0
         self.__filter_contours_max_height = 1000.0
-        self.__filter_contours_solidity = [
-            84.53237410071944, 99.14675767918088]
+        self.__filter_contours_solidity = [85.431654676259, 99.14675767918088]
         self.__filter_contours_max_vertices = 1000000.0
         self.__filter_contours_min_vertices = 10.0
-        self.__filter_contours_min_ratio = 0.4
+        self.__filter_contours_min_ratio = 0.3
         self.__filter_contours_max_ratio = 2.0
 
         self.filter_contours_output = None
-
+        
     def process(self, source0):
         """
         Runs the pipeline and sets all outputs to new values.
@@ -364,25 +363,15 @@ class GripPipeline:
 
 
 class NTVars:
-    sendError = ntproperty("/visionProcessing/error", False, writeDefault=True,
-                           doc='Returns True if there is currently an error.')
-    sendErrorMessage = ntproperty("/visionProcessing/errorMessage", "No current error message.",
-                                  writeDefault=True, doc='This is the current vision error message from the raspberry pi.')
-    xValue = ntproperty("/visionProcessing/targetInfo/contoursReport/x",
-                        [0.0, 0.0], writeDefault=False, doc='This is the x value from the gripPipeline.')
-    yValue = ntproperty("/visionProcessing/targetInfo/contoursReport/y",
-                        [0.0, 0.0], writeDefault=True, doc='This is the y value from the gripPipeline.')
-    wValue = ntproperty("/visionProcessing/targetInfo/contoursReport/width",
-                        [0.0, 0.0], writeDefault=True, doc='This is the width value from the gripPipeline.')
-    hValue = ntproperty("/visionProcessing/targetInfo/contoursReport/height",
-                        [0.0, 0.0], writeDefault=True, doc='This is the height value from the gripPipeline.')
-    areaValue = ntproperty("/visionProcessing/targetInfo/contoursReport/area",
-                           [0.0, 0.0], writeDefault=True, doc='This is the area value from the gripPipeline.')
-    solidValue = ntproperty("/visionProcessing/targetInfo/contoursReport/solidity", [
-                            0.0, 0.0], writeDefault=True, doc='This is the solidity value from the gripPipeline.')
-    ratioValue = ntproperty("/visionProcessing/targetInfo/contoursReport/ratio", [
-                            0.0, 0.0], writeDefault=True, doc='This is the ratio value from the gripPipeline.')
-
+    sendError = ntproperty("/visionProcessing/error", False, writeDefault=True, doc='Returns True if there is currently an error.')
+    sendErrorMessage = ntproperty("/visionProcessing/errorMessage", "No current error message.", writeDefault=True, doc='This is the current vision error message from the raspberry pi.')
+    xValue = ntproperty("/visionProcessing/targetInfo/contoursReport/x", [0.0, 0.0], writeDefault=False, doc='This is the x value from the gripPipeline.')
+    yValue = ntproperty("/visionProcessing/targetInfo/contoursReport/y", [0.0, 0.0], writeDefault=True, doc='This is the y value from the gripPipeline.')
+    wValue = ntproperty("/visionProcessing/targetInfo/contoursReport/width", [0.0, 0.0], writeDefault=True, doc='This is the width value from the gripPipeline.')
+    hValue = ntproperty("/visionProcessing/targetInfo/contoursReport/height", [0.0, 0.0], writeDefault=True, doc='This is the height value from the gripPipeline.')
+    areaValue = ntproperty("/visionProcessing/targetInfo/contoursReport/area", [0.0, 0.0], writeDefault=True, doc='This is the area value from the gripPipeline.')
+    solidValue = ntproperty("/visionProcessing/targetInfo/contoursReport/solidity", [0.0, 0.0], writeDefault=True, doc='This is the solidity value from the gripPipeline.')
+    ratioValue = ntproperty("/visionProcessing/targetInfo/contoursReport/ratio", [0.0, 0.0], writeDefault=True, doc='This is the ratio value from the gripPipeline.')
 
 if __name__ == "__main__":
     if len(sys.argv) >= 2:
@@ -432,4 +421,3 @@ if __name__ == "__main__":
             ntVars.areaValue = processing.filter_contours_output[4]
             ntVars.solidValue = processing.filter_contours_output[5]
             ntVars.ratioValue = processing.filter_contours_output[6]
-        time.sleep(.01)
