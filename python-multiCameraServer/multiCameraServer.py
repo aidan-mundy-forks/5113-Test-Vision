@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-#----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 # Copyright (c) 2018 FIRST. All Rights Reserved.
 # Open Source Software - may be modified and shared by FRC teams. The code
 # must be accompanied by the FIRST BSD license file in the root directory of
 # the project.
-#----------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
 
 import json
 import time
@@ -57,7 +57,10 @@ import ntcore
 
 configFile = "/boot/frc.json"
 
-class CameraConfig: pass
+
+class CameraConfig:
+    pass
+
 
 team = None
 server = False
@@ -65,9 +68,11 @@ cameraConfigs = []
 switchedCameraConfigs = []
 cameras = []
 
+
 def parseError(str):
     """Report parse error."""
     print("config error in '" + configFile + "': " + str, file=sys.stderr)
+
 
 def readCameraConfig(config):
     """Read single camera configuration."""
@@ -95,6 +100,7 @@ def readCameraConfig(config):
     cameraConfigs.append(cam)
     return True
 
+
 def readSwitchedCameraConfig(config):
     """Read single switched camera configuration."""
     cam = CameraConfig()
@@ -116,6 +122,7 @@ def readSwitchedCameraConfig(config):
     switchedCameraConfigs.append(cam)
     return True
 
+
 def readConfig():
     """Read configuration file."""
     global team
@@ -126,7 +133,8 @@ def readConfig():
         with open(configFile, "rt", encoding="utf-8") as f:
             j = json.load(f)
     except OSError as err:
-        print("could not open '{}': {}".format(configFile, err), file=sys.stderr)
+        print("could not open '{}': {}".format(
+            configFile, err), file=sys.stderr)
         return False
 
     # top level must be an object
@@ -169,6 +177,7 @@ def readConfig():
 
     return True
 
+
 def startCamera(config):
     """Start running the camera."""
     print("Starting camera '{}' on {}".format(config.name, config.path))
@@ -184,6 +193,7 @@ def startCamera(config):
 
     return camera
 
+
 def startSwitchedCamera(config):
     """Start running the switched camera."""
     print("Starting switched camera '{}' on {}".format(config.name, config.key))
@@ -193,7 +203,7 @@ def startSwitchedCamera(config):
         if isinstance(value, float):
             i = int(value)
             if i >= 0 and i < len(cameras):
-              server.setSource(cameras[i])
+                server.setSource(cameras[i])
         elif isinstance(value, str):
             for i in range(len(cameraConfigs)):
                 if value == cameraConfigs[i].name:
@@ -207,6 +217,7 @@ def startSwitchedCamera(config):
         ntcore.constants.NT_NOTIFY_UPDATE)
 
     return server
+
 
 if __name__ == "__main__":
     if len(sys.argv) >= 2:
@@ -235,4 +246,5 @@ if __name__ == "__main__":
 
     # loop forever
     while True:
+
         time.sleep(10)
