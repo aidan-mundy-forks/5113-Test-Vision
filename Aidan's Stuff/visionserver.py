@@ -419,8 +419,8 @@ if __name__ == "__main__":
         frame = videoCapture.grabFrame(frame, timeout=0.5)[1]
         processing.process(frame)
         if len(processing.filter_contours_output[0]) != 2:
-            sendError = True
-            sendErrorMessage = ("There are " +
+            ntVars.sendError = True
+            ntVars.sendErrorMessage = ("There are " +
                                 str(len(processing.filter_contours_output[0])) + " contours, but there should be 2!")
         else:
             ntVars.sendError = False
