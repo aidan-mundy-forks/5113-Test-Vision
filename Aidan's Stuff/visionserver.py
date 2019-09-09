@@ -365,7 +365,7 @@ class GripPipeline:
 class NTVars:
     sendError = ntproperty("/visionProcessing/error", False, writeDefault=True, doc='Returns True if there is currently an error.')
     sendErrorMessage = ntproperty("/visionProcessing/errorMessage", "No current error message.", writeDefault=True, doc='This is the current vision error message from the raspberry pi.')
-    xValue = ntproperty("/visionProcessing/targetInfo/contoursReport/x", [0.0, 0.0], writeDefault=False, doc='This is the x value from the gripPipeline.')
+    xValue = ntproperty("/visionProcessing/targetInfo/contoursReport/x", [0.0, 0.0], writeDefault=True, doc='This is the x value from the gripPipeline.')
     yValue = ntproperty("/visionProcessing/targetInfo/contoursReport/y", [0.0, 0.0], writeDefault=True, doc='This is the y value from the gripPipeline.')
     wValue = ntproperty("/visionProcessing/targetInfo/contoursReport/width", [0.0, 0.0], writeDefault=True, doc='This is the width value from the gripPipeline.')
     hValue = ntproperty("/visionProcessing/targetInfo/contoursReport/height", [0.0, 0.0], writeDefault=True, doc='This is the height value from the gripPipeline.')
